@@ -32,7 +32,8 @@ for i in range(n // 20):
     driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
     time.sleep(5) # ждем пару секунд, чтобы все прогрузилось и отработало
 
-people = driver.find_element(By.XPATH, "/html/body/div[2]/div/div[1]/div[2]/main/div/div[1]/div[3]/div/div[1]")
+html_source = driver.page_source
+people = html_source.find_element(By.XPATH, "/html/body/div[2]/div/div[1]/div[2]/main/div/div[1]/div[3]/div/div[1]")
 
 # после пролистывания у нас не странице имеется N юзеров и начинаем их парсить
 for div in people:
