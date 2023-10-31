@@ -35,27 +35,38 @@ import os
 # html_source = driver.page_source
 
 
-with open('webpage.html',  'r', encoding='utf-8') as webpage:
+with open('TenChat.html',  'r', encoding='utf-8') as webpage:
     soup = BeautifulSoup(webpage, 'html.parser')
-    people = soup.find_all(class_='relative bg-white')
+    people = soup.find_all(class_='text-gray-900 mr-3 min-w-0 flex-1')
     for person in people:
-        user_info = person.find(class_='text-gray-900 mr-3 min-w-0 flex-1')
-        job_info = user_info.find(class_='mobile:color-gray-300 mt-3 text-sm mobile:mt-1 mobile:text-xs')
+        # print(person)
+        job_info = person.find(class_='mobile:color-gray-300 mt-3 text-sm mobile:mt-1 mobile:text-xs')
         job_place = job_info.find(class_='tc-break-word mb-1 line-clamp-2')
         company_type = job_place.find(class_='tc-link tracking-smallest')
 
-        print("Company Type:", company_type)
+        if company_type is not None:
+            company_type_text = company_type.text
+        else:
+            company_type_text = "N/A"  # or any other default value
 
-        if company_type and "ООО" in company_type.text:
-            name = user_info.find(class_='relative flex items-center pr-5 font-medium text-gray-1100 mobile:text-sm')
+        if job_info is not None:
+            job_info_text = job_info.text
+        else:
+            job_info_text = "N/A"
+
+        if job_place is not None:
+            job_place_text = job_place.text
+        else:
+            job_place_text = "N/A"
+
+        # print("Company Type:", company_type_text, "Job Info:", job_info_text, "Job Place:", job_place_text)
+
+        if company_type_text != 'N/A' and "ООО" in company_type_text:
+            name = person.find(class_='relative flex items-center pr-5 font-medium text-gray-1100 mobile:text-sm')
             tag_a = name.find('a', class_='tc-btn-focus block !decoration-solid hover:underline')
             if tag_a:
                 link = tag_a['href']
-                print("Link:", link)
-            else:
-                print("Link not found.")
-        else:
-            print("Company not 'ООО'.")
+                print(link)
 # people = html_source.find_element(By.XPATH, "/html/body/div[2]/div/div[1]/div[2]/main/div/div[1]/div[3]/div/div[1]")
 #
 # # после пролистывания у нас не странице имеется N юзеров и начинаем их парсить
