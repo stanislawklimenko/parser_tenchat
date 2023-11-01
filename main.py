@@ -64,15 +64,20 @@ for i in range(n // 20):
     driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
     time.sleep(5) # ждем пару секунд, чтобы все прогрузилось и отработало
 
-people = driver.find_elements(By.CLASS_NAME, "text-gray-900 mr-3 min-w-0 flex-1")
+html = driver.page_source
+soup = BeautifulSoup(html)
+
+people = soup.find_all(class_='text-gray-900 mr-3 min-w-0 flex-1')
 print(people)
+print('-' * 30)
+
 # после пролистывания у нас не странице имеется N юзеров и начинаем их парсить
-for div in people:
-    job_info = div.find_element(By.CLASS_NAME, "mobile:color-gray-300 mt-3 text-sm mobile:mt-1 mobile:text-xs")
+for person in people:
+    job_info = person.find(class_='mobile:color-gray-300 mt-3 text-sm mobile:mt-1 mobile:text-xs')
     print(job_info)
-    job_place = job_info.find_element(By.CLASS_NAME, "tc-break-word mb-1 line-clamp-2")
+    job_place = job_info.find(class_='tc-break-word mb-1 line-clamp-2')
     print(job_place)
-    company_type = job_place.find_element(By.CLASS_NAME, "tc-link tracking-smallest")
+    company_type = job_place.find(class_='tc-link tracking-smallest')
     print(company_type)
 
     if company_type is not None:
@@ -89,11 +94,12 @@ for div in people:
         job_place_text = job_place.text
     else:
         job_place_text = "N/A"
+
     if company_type_text != 'N/A' and "ООО" in company_type_text:
-        name = div.find_element(By.CLASS_NAME, "relative flex items-center pr-5 font-medium text-gray-1100 mobile:text-sm")
-        tag_a = name.find_element(By.CLASS_NAME, "tc-btn-focus block !decoration-solid hover:underline")
+        name = person.find(class_='relative flex items-center pr-5 font-medium text-gray-1100 mobile:text-sm')
+        tag_a = name.find('a', class_='tc-btn-focus block !decoration-solid hover:underline')
         if tag_a:
             link = tag_a['href']
-        print(link)  # или сохраняешь куда-нибудь в файл
+            print(link)  # или сохраняешь куда-нибудь в файл
 
 driver.quit()
