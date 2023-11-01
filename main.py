@@ -65,20 +65,15 @@ for i in range(n // 20):
     time.sleep(5) # ждем пару секунд, чтобы все прогрузилось и отработало
 
 html = driver.page_source
-soup = BeautifulSoup(html)
+soup = BeautifulSoup(html, 'lxml')
 
 people = soup.find_all(class_='text-gray-900 mr-3 min-w-0 flex-1')
-print(people)
-print('-' * 30)
-
+base_url = 'https://tenchat.ru'
 # после пролистывания у нас не странице имеется N юзеров и начинаем их парсить
 for person in people:
     job_info = person.find(class_='mobile:color-gray-300 mt-3 text-sm mobile:mt-1 mobile:text-xs')
-    print(job_info)
     job_place = job_info.find(class_='tc-break-word mb-1 line-clamp-2')
-    print(job_place)
     company_type = job_place.find(class_='tc-link tracking-smallest')
-    print(company_type)
 
     if company_type is not None:
         company_type_text = company_type.text
@@ -100,6 +95,7 @@ for person in people:
         tag_a = name.find('a', class_='tc-btn-focus block !decoration-solid hover:underline')
         if tag_a:
             link = tag_a['href']
-            print(link)  # или сохраняешь куда-нибудь в файл
+            full_link = base_url + link
+            print(full_link)
 
 driver.quit()
